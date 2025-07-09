@@ -37,3 +37,5 @@ set_source_files_properties(
 idf_component_get_property(arduino-foc_lib zzy__arduino-foc COMPONENT_LIB)
 cmake_policy(SET CMP0079 NEW)
 target_link_libraries(${arduino-foc_lib} PUBLIC ${COMPONENT_LIB})
+
+target_compile_definitions(${COMPONENT_LIB} PUBLIC ESP_H ARDUINO_ARCH_ESP32)
