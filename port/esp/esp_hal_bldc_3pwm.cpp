@@ -105,9 +105,9 @@ void BLDCDriver3PWM::setPwm(float Ua, float Ub, float Uc)
 
     // hardware specific writing
     // hardware specific function - depending on driver and mcu
-    //_writeDutyCycle3PWM(dc_a, dc_b, dc_c, params);
+    _writeDutyCycle3PWM(dc_a, dc_b, dc_c, params);
 
-    halPwmWrite();
+    // halPwmWrite();
 }
 
 bool checkMcpwmGroupAvailable(int group_id)
@@ -245,7 +245,6 @@ void setLedcChannelUnUsed(std::vector<int> ledc_channels)
 
 int BLDCDriver3PWM::init()
 {
-    int ret = -1;
     // PWM pins
     pinMode(pwmA, OUTPUT);
     pinMode(pwmB, OUTPUT);
@@ -267,12 +266,17 @@ int BLDCDriver3PWM::init()
 
     // Set the pwm frequency to the pins
     // hardware specific function - depending on driver and mcu
-    // params = _configure3PWM(pwm_frequency, pwmA, pwmB, pwmC);
-    // initialized = (params != SIMPLEFOC_DRIVER_INIT_FAILED);
-    // return params != SIMPLEFOC_DRIVER_INIT_FAILED;
-
+    params = _configure3PWM(pwm_frequency, pwmA, pwmB, pwmC);
+    initialized = (params != SIMPLEFOC_DRIVER_INIT_FAILED);
+    if (params != SIMPLEFOC_DRIVER_INIT_FAILED) {
+        printf("Driver init successful.\n");
+    } else {
+        printf("Driver init failed.\n");
+    }
+    return params != SIMPLEFOC_DRIVER_INIT_FAILED;
+#if 0
     // ESP32 Platform specific function. Auto select driver.
-
+    int ret = -1;
     ret = checkAvailableDriver();
     if (ret == 0) {
         initialized = 0;
@@ -382,6 +386,7 @@ int BLDCDriver3PWM::init()
         }
 
     return 1;
+#endif
 }
 
 #ifdef CONFIG_SOC_MCPWM_SUPPORTED
